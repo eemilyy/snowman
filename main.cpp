@@ -8,6 +8,7 @@ void init(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClearColor(0, 0, 0, 0);  
 
+  // set camera position
   eyeX = 0;
   eyeY = -15;
   eyeZ = 400;
@@ -23,11 +24,11 @@ void init(){
 }
 
 void set_light(){
-  //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light);
-  GLfloat ambient_light[]={0.2, 0.2, 0.2, 1.0};
-  GLfloat diffuse_light[]={1.0, 1.0, 1.0, 1.0};
-  GLfloat specular_light[]={0.0, 1.0, 1.0, 1.0};
-  GLfloat light_emission[]={0.0, 0.7, 0.1, 0.0};
+  // data structure for lights
+  GLfloat ambient_light[] = {0.2, 0.2, 0.2, 1.0};
+  GLfloat diffuse_light[] = {1.0, 1.0, 1.0, 1.0};
+  GLfloat specular_light[] = {0.0, 1.0, 1.0, 1.0};
+  GLfloat light_emission[] = {0.0, 0.7, 0.1, 0.0};
   GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};
 
   // define light parameters
@@ -36,7 +37,6 @@ void set_light(){
   glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light );
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-  //glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
 }
 
 void reshape(int w, int h){
@@ -61,29 +61,24 @@ void drawSky(){
 
   glPushMatrix();
     glColor3f(0.0f, 0.0f, 2.0f);
-    //glTranslatef(0, -15, 0);
-    //glScalef(1.0f,1.0f,1.0f);
-    gluSphere(gluNewQuadric(), 980, 25, 25);
+    gluSphere(gluNewQuadric(), 980, 50, 25);
   glPopMatrix(); 
 
 }
 
 void drawGround(){
-
   glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glPushMatrix();
     glRotatef(90,1,0,0);
     glTranslatef(0,0,23);
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);
-      //glNormal3f(1.0, 0.0, 0.0);
       glVertex3f(1000, 1000, 100);
       glVertex3f(-1000, 1000, 100);
       glVertex3f(-1000, -1000, 100);
       glVertex3f(1000, -1000, 100);
     glEnd();
   glPopMatrix();
- // glRotatef(-90,1,0,0);
 }
 
 void drawTree(int x, int z){
@@ -120,6 +115,24 @@ void drawTree(int x, int z){
     glPopMatrix(); 
 }
 
+void drawEyes(int x){
+  glColor3f(0.5f, 0.5f, 0.5f); // set eye color
+  glPushMatrix(); 
+    glTranslatef(x, 4, 10); // floatX, floatY, floatZ
+    gluSphere(gluNewQuadric(), 3, 25, 25); //Specifies the quadrics object, radius, subdivisions around the z axis, subdivisions along the z axis
+  glPopMatrix();
+
+}
+
+void drawButton(int y, int z){
+  glColor3f(0.0f, 0.0f, 0.0f);
+  glPushMatrix();
+    glPushMatrix();
+    glTranslatef(0, y, z);
+    gluSphere(gluNewQuadric(), 2, 25, 25);
+  glPopMatrix();
+}
+
 void drawSnowman(){
 
    // HEAD
@@ -127,28 +140,27 @@ void drawSnowman(){
     glPushMatrix();
       glColor3f(1.0f, 1.0f, 1.0f);
       glTranslatef(0, -15, 0);
-      //glScalef(1.0f,1.0f,1.0f);
       gluSphere(gluNewQuadric(), 15, 25, 25);
 
       //EYES
-      glColor3f(0.5f, 0.5f, 0.5f); // set eye color
-      glPushMatrix(); //right eye
-        glTranslatef(8, 4, 12); // floatX, floatY, floatZ
-        //glRotatef(0, 1.0, 0.0, 0.0);
-        gluSphere(gluNewQuadric(), 3, 25, 25); //Specifies the quadrics object, radius, subdivisions around the z axis, subdivisions along the z axis
-      glPopMatrix();
+      drawEyes(8); //right eye
+      drawEyes(-8); // left eye
 
-      glPushMatrix(); //left eye
-        glTranslatef(-8, 4, 12);
-        //glRotatef(0, 1.0, 0.0, 0.0);
-        gluSphere(gluNewQuadric(), 3, 25, 25);
-      glPopMatrix();  
+      // glColor3f(0.5f, 0.5f, 0.5f); // set eye color
+      // glPushMatrix(); //right eye
+      //   glTranslatef(8, 4, 12); // floatX, floatY, floatZ
+      //   gluSphere(gluNewQuadric(), 3, 25, 25); //Specifies the quadrics object, radius, subdivisions around the z axis, subdivisions along the z axis
+      // glPopMatrix();
+
+      // glPushMatrix(); //left eye
+      //   glTranslatef(-8, 4, 12);
+      //   gluSphere(gluNewQuadric(), 3, 25, 25);
+      // glPopMatrix();  
        
       //NOSE
       glColor3f(1.0f, 0.5f, 0.0f);
       glPushMatrix();
         glTranslatef(0, 0, 13);
-        //glRotatef(0, 1.0, 0.0, 0.0);
         glutSolidCone(3, 15, 100, 25); // radius of the base, height, ubdivisions around the Z axis, subdivisions along the Z axis
       glPopMatrix();
     
@@ -208,27 +220,29 @@ void drawSnowman(){
 
       //BUTTON
       // three black buttons
-      glColor3f(0.0f, 0.0f, 0.0f);
-      glPushMatrix();
-        glPushMatrix();
-        glTranslatef(0, 10, 23);
-        //glRotatef(0, 1.0, 0.0, 0.0);
-        gluSphere(gluNewQuadric(), 2, 25, 25);
-      glPopMatrix();
 
-      glPushMatrix();
-        glPushMatrix();
-        glTranslatef(0, 0, 25);
-        //glRotatef(0, 1.0, 0.0, 0.0);
-        gluSphere(gluNewQuadric(), 2, 25, 25);
-      glPopMatrix();
+      drawButton(10, 23); // first button
+      drawButton(0, 25); // middle button
+      drawButton(-10, 23); // last button
 
-      glPushMatrix();
-        glPushMatrix();
-        glTranslatef(0, -10, 23);
-        //glRotatef(0, 1.0, 0.0, 0.0);
-        gluSphere(gluNewQuadric(), 2, 25, 25);
-      glPopMatrix();
+      // glColor3f(0.0f, 0.0f, 0.0f);
+      // glPushMatrix();
+      //   glPushMatrix();
+      //   glTranslatef(0, 10, 23);
+      //   gluSphere(gluNewQuadric(), 2, 25, 25);
+      // glPopMatrix();
+
+      // glPushMatrix();
+      //   glPushMatrix();
+      //   glTranslatef(0, 0, 25);
+      //   gluSphere(gluNewQuadric(), 2, 25, 25);
+      // glPopMatrix();
+
+      // glPushMatrix();
+      //   glPushMatrix();
+      //   glTranslatef(0, -10, 23);
+      //   gluSphere(gluNewQuadric(), 2, 25, 25);
+      // glPopMatrix();
 
       // ARMS
       glColor3f(0.2f, 0.0f, 0.0f);
@@ -258,7 +272,6 @@ void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    //gluLookAt(0,-80,400, 0,0,0,0,1,0);
     gluLookAt(eyeX,eyeY,eyeZ,0,-15,0,0,1,0);
 
 
@@ -272,6 +285,17 @@ void draw(){
     drawGround();
     drawTree(150, 150);
     drawTree(-150, 100);
+    drawTree(-250, -100);
+    drawTree(350, -140);
+    drawTree(450, 240);
+    drawTree(280, 600);
+    drawTree(600, -540);
+    drawTree(480, 640);
+    drawTree(-250, 600);
+    drawTree(-600, -540);
+    drawTree(-480, 640);
+    drawTree(250, -600);
+
     drawSnowman();
 
     glutSwapBuffers();
@@ -306,6 +330,7 @@ void specialKeys(int key, int x, int y){
 
 int main(int argc, char **argv){
   glutInit(&argc, argv);
+  // 
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowPosition(200, 100);
   glutInitWindowSize(1080, 720);
