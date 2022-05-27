@@ -1,8 +1,10 @@
 #include <GL/glut.h>
 #include <math.h>
+#include <iostream>
 
 int X, Y;
 GLfloat eyeX, eyeY, eyeZ;
+GLfloat trees [9][2] = {{150,150},{-150,100},{350,-140},{450,240},{600,-540},{480,640},{-250,600},{-480,640},{250,-600}};
 
 void init(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -225,25 +227,6 @@ void drawSnowman(){
       drawButton(0, 25); // middle button
       drawButton(-10, 23); // last button
 
-      // glColor3f(0.0f, 0.0f, 0.0f);
-      // glPushMatrix();
-      //   glPushMatrix();
-      //   glTranslatef(0, 10, 23);
-      //   gluSphere(gluNewQuadric(), 2, 25, 25);
-      // glPopMatrix();
-
-      // glPushMatrix();
-      //   glPushMatrix();
-      //   glTranslatef(0, 0, 25);
-      //   gluSphere(gluNewQuadric(), 2, 25, 25);
-      // glPopMatrix();
-
-      // glPushMatrix();
-      //   glPushMatrix();
-      //   glTranslatef(0, -10, 23);
-      //   gluSphere(gluNewQuadric(), 2, 25, 25);
-      // glPopMatrix();
-
       // ARMS
       glColor3f(0.2f, 0.0f, 0.0f);
       
@@ -283,18 +266,11 @@ void draw(){
 
     drawSky();
     drawGround();
-    drawTree(150, 150);
-    drawTree(-150, 100);
-    drawTree(-250, -100);
-    drawTree(350, -140);
-    drawTree(450, 240);
-    drawTree(280, 600);
-    drawTree(600, -540);
-    drawTree(480, 640);
-    drawTree(-250, 600);
-    drawTree(-600, -540);
-    drawTree(-480, 640);
-    drawTree(250, -600);
+    
+    //drawTrees
+    for (int i = 0; i < 9; i++){
+        drawTree(trees[i][0], trees[i][1]);
+    }
 
     drawSnowman();
 
